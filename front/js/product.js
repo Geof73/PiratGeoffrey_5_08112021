@@ -4,41 +4,32 @@ console.log(getId);
 
 (async function () {
     const response = await fetch(`http://localhost:3000/api/products/${getId}`)
-    const resp = await response.json()
+    const product = await response.json()
+    
 
-    let html = ''
-    for (const product of resp)
-        html +=
-            `<div class="item__img">
-                <img src="${product.imageUrl}" alt="${product.altTxt}">
-                </div>`
-        
-            document.getElementsByClassName(item__img).innerHTML = html
+
+document.getElementById('title').textContent = product.name
+document.getElementById('price').textContent = product.price
+document.getElementById('description').textContent = product.description
+document.getElementById('colors').textContent = product.colors
+
+let colors = product.colors;
+for (let color of colors) {
+let option = document.createElement("option");
+option.value = color;
+option.innerText = color;
+document.getElementById("colors").appendChild(option);}
+
+
 
 })() 
 
-/*const response = fetch(`http://localhost:3000/api/products/${getId}`)
-    resp = console.log()
-
-    let html = ''
-    for (const product of html)
-        html +=
-            `<div class="item__img">
-                <img src="${product.imageUrl}" alt="${product.altTxt}">
-                </div>`
-        
-            document.getElementsByClassName(item__img).innerHTML = html
+var getButton = document.getElementById('addToCart')
+getButton.onclick = function (){
+    localStorage.setItem("colors", value);
+    localStorage.setItem("quantity", value);
+    localStorage.setItem("getId", value);
+}
 
 
-/*(async function () {
-    const response = await fetch(`http://localhost:3000/api/products/${getId}`)
-    const articles = await response.json()
 
-    let html = ''
-    for (const product of articles)
-        html =+
-            `<div class="item__img">
-            <img src="${product.imageUrl}" alt="${product.altTxt}">
-            </div>`
-    document.querySelectorAll("item > div").innerHTML = html;
-})()*/
