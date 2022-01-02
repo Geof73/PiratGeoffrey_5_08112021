@@ -42,15 +42,23 @@ window.addEventListener('DOMContentLoaded', async function () {
     // Création d'une fonction qui au clic de l'utilisateur sur le bouton "Ajouter au panier", récolte les informations pour les stocker dans le localstorage, qui seront utilisées dans le panier.
     button.addEventListener('click', function () {
 
+        // Récupération des informations nécessaires pour la constitution de la page "panier".
+        let nameProduct = product.name
+        let imageProduct = product.imageUrl
+        let imageTxt = product.altTxt
+        let priceProduct = product.price
         const color = document.getElementById("colors").value
-        const quantity = document.getElementById("quantity").value
+        const quantity = parseFloat(document.getElementById("quantity").value)
 
-        let produit = {getId, quantity, color}
+        // Stockage des informations récupérées dans un objet.
+        let cart = {getId, quantity, color, nameProduct, imageProduct, imageTxt, priceProduct}
 
-        const myCart = new Panier()
+       let myCart = new Panier()
 
-        myCart.add(produit)
+        // Ajout de l'objet produit au tableau myCart.
+        myCart.add(cart)
         
+        // Sauvegarde dans le localstorage du panier.
         myCart.save()
         
     })
