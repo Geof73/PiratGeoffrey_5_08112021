@@ -21,7 +21,6 @@ class Panier {
         if (foundProduct = foundColor) {
             foundProduct.quantity = cart.quantity;
             foundProduct.color = cart.color;
-
         }
         else {
             this.panier.push(cart);
@@ -34,17 +33,13 @@ class Panier {
         this.save();
     }
 
-    changeQuantity() {
-        let getElement = JSON.parse(localStorage.getItem("ID"));
-        let produit = JSON.parse(localStorage.getItem("Data"));
-        let foundProduct = products.find(e => e.getId == cart.getId);
+    changeQuantity(cart, quantity) {
+        let foundProduct = this.panier.find(e => e.getId == cart.getId);
         console.log(foundProduct)
-        if (foundProduct == getElement.elementId) {
-            let valueQuantity = parseFloat(document.getElementsByClassName("itemQuantity").value)
-            cart.quantity += valueQuantity;
+        if (foundProduct) {
+            foundProduct.quantity += quantity;
             if (foundProduct.quantity <= 0) {
                 this.remove(foundProduct);
-                location.reload()
             }
             else {
                 localStorage.setItem("Data", JSON.stringify(products));
