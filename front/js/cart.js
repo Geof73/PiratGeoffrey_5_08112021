@@ -60,11 +60,13 @@ let changerQuantite = document.getElementById("cart__items").addEventListener('c
       let product = foundId = foundColor
       product.quantity = eventQuantity
       myCart.save();
-      if (eventQuantity < 0) {
-        myCart.panier.filter(p => p.getId == product);
-        myCart.save()
-        location.reload()
+      if (product.quantity <= 0) {
+        let deleteCanap = myCart.panier.filter(e => e == product);
+        console.log(deleteCanap)
+        myCart.save();
+        //location.reload()
       }
+
     } else if (event.target.matches('input.itemQuantity')) {
       let eventQuantity = parseFloat(event.target.value);
       let foundId = myCart.panier.find(e => e.getId == row.dataset.id);
@@ -72,10 +74,11 @@ let changerQuantite = document.getElementById("cart__items").addEventListener('c
       let product = foundId = foundColor
       product.quantity = eventQuantity
       myCart.save();
-      if (eventQuantity < 0) {
-        myCart.panier.filter(p => p.getId == product);
-        myCart.save()
-        location.reload()
+      if (product.quantity <= 0) {
+        let deleteCanap = myCart.panier.filter(e => e == product);
+        console.log(deleteCanap)
+        myCart.save();
+        //location.reload()
       }
     }
   })
@@ -85,50 +88,62 @@ let changerQuantite = document.getElementById("cart__items").addEventListener('c
 let getForm = document.querySelector(".cart__order__form").addEventListener('change', (event) => {
   console.log(event)
 
-  //
   let getJsonData = JSON.parse(localStorage.getItem("Data"));
   let getJsonContact = JSON.parse(localStorage.getItem("Contact"));
 
   let firstName = document.getElementById('firstName').value
-  document.getElementById("firstNameErrorMsg").innerHTML = ""
+  if (document.getElementById('firstName').checkValidity() == true) {
+    document.getElementById("firstNameErrorMsg").innerHTML = ""
+  }
+  else {
+    document.getElementById("firstNameErrorMsg").innerHTML = "Veuillez entrer votre nom, uniquement composé de lettres."
+  }
+
   let lastName = document.getElementById('lastName').value
-  document.getElementById("lastNameErrorMsg").innerHTML = ""
+  if (document.getElementById('lastName').checkValidity() == true) {
+    document.getElementById("lastNameErrorMsg").innerHTML = ""
+  }
+  else {
+    document.getElementById("lastNameErrorMsg").innerHTML = "Veuillez entrer votre nom, uniquement composé de lettres."
+  }
+
   let address = document.getElementById('address').value
-  document.getElementById("addressErrorMsg").innerHTML = ""
+  if (document.getElementById('address').checkValidity() == true) {
+    document.getElementById("addressErrorMsg").innerHTML = ""
+  }
+  else {
+    document.getElementById("addressErrorMsg").innerHTML = "Veuillez entrer votre adresse."
+  }
+
   let city = document.getElementById('city').value
-  document.getElementById("cityErrorMsg").innerHTML = ""
+  if (document.getElementById('city').checkValidity() == true) {
+    document.getElementById("cityErrorMsg").innerHTML = ""
+  }
+  else {
+    document.getElementById("cityErrorMsg").innerHTML = "Veuillez entrer votre ville, uniquement composée de lettres.."
+  }
+
   let email = document.getElementById('email').value
-  document.getElementById("emailErrorMsg").innerHTML = ""
+  if (document.getElementById('email').checkValidity() == true) {
+    document.getElementById("emailErrorMsg").innerHTML = ""
+  }
+  else {
+    document.getElementById("emailErrorMsg").innerHTML = "Veuillez entrer une adresse email valide."
+  }
 
   let contact = { firstName, lastName, address, city, email }
   localStorage.setItem("Contact", JSON.stringify(contact));
 
   // Création de conditions pour que l'usager puisse valider le formulaire.
-  if (getJsonData != undefined) {
+  for(const ele in getJsonContact)
+  if (ele != undefined) {
     document.getElementById('order').addEventListener('click', function (event) {
       const contact = { getJsonData, getJsonContact };
       post();
-
-      if (firstName.getJsonContact == undefined) {
-        document.getElementById("firstNameErrorMsg").innerHTML = "Veuillez entrer votre nom, uniquement composé de lettres."
-      }
-      if (lastName.getJsonContact == undefined) {
-        document.getElementById("lastNameErrorMsg").innerHTML = "Veuillez entrer votre nom, uniquement composé de lettres."
-      }
-      if (address.getJsonContact == undefined) {
-        document.getElementById("addressErrorMsg").innerHTML = "Veuillez entrer votre adresse."
-      }
-      if (city.getJsonContact == undefined) {
-        document.getElementById("cityErrorMsg").innerHTML = "Veuillez entrer votre ville, uniquement composée de lettres.."
-      }
-      if (email.getJsonContact == undefined) {
-        document.getElementById("emailErrorMsg").innerHTML = "Veuillez entrer une adresse email valide."
-      }
-
     })
   }
   else {
-    window.alert("Veuillez d'abord ajouter des éléments à votre panier")
+    alert("Veuillez d'abord ajouter des éléments à votre panier")
   }
 
   // Validation du formulaire en l'envoyant au serveur via la méthode POST.

@@ -51,16 +51,19 @@ window.addEventListener('DOMContentLoaded', async function () {
         const quantity = parseFloat(document.getElementById("quantity").value)
 
         // Stockage des informations récupérées dans un objet.
-        let cart = {getId, quantity, color, nameProduct, imageProduct, imageTxt, priceProduct}
+        let cart = { getId, quantity, color, nameProduct, imageProduct, imageTxt, priceProduct }
 
-       let myCart = new Panier()
+        let myCart = new Panier()
 
         // Ajout de l'objet produit au tableau myCart.
-        myCart.add(cart)
-        
-        // Sauvegarde dans le localstorage du panier.
-        myCart.save()
-        
+        if (quantity != 0) {
+            myCart.add(cart)
+
+            // Sauvegarde dans le localstorage du panier.
+            myCart.save()
+            window.alert("Votre sélection a été ajoutée au panier !")
+        }
+        else{window.alert("Veuillez ajouter une quantité à votre sélection !")}
     })
 })
 

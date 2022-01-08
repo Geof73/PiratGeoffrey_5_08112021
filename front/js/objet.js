@@ -28,10 +28,14 @@ class Panier {
         this.save();
     }
 
-    remove(cart) {
-        this.panier = this.panier.filter(p => p.getId != cart.getId);
-        this.save();
-    }
+    /*remove(foundId, foundColor) {
+        this.panier.filter(function(found) {
+            if (found != foundId, foundColor){ return true}
+          })
+          alert("Le produit a été supprimé de votre panier")
+          this.save()
+          //location.reload()
+    }*/
 
     changeQuantity(cart, quantity) {
         let foundProduct = this.panier.find(e => e.getId == cart.getId);
