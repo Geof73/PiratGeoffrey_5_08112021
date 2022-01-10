@@ -56,7 +56,7 @@ window.addEventListener('DOMContentLoaded', async function () {
         let myCart = new Panier()
 
         // Ajout de l'objet produit au tableau myCart.
-        if (quantity != 0) {
+        if (quantity > 0) {
             myCart.add(cart)
 
             // Sauvegarde dans le localstorage du panier.
