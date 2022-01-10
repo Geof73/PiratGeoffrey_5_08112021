@@ -28,36 +28,12 @@ class Panier {
         this.save();
     }
 
-    /*remove(foundId, foundColor) {
-        this.panier.filter(function(found) {
-            if (found != foundId, foundColor){ return true}
-          })
-          alert("Le produit a été supprimé de votre panier")
-          this.save()
-          //location.reload()
-    }*/
-
-    changeQuantity(cart, quantity) {
-        let foundProduct = this.panier.find(e => e.getId == cart.getId);
-        console.log(foundProduct)
-        if (foundProduct) {
-            foundProduct.quantity += quantity;
-            if (foundProduct.quantity <= 0) {
-                this.remove(foundProduct);
-            }
-            else {
-                localStorage.setItem("Data", JSON.stringify(products));
-            }
-        }
-    }
-
     getNumberProduct() {
         let number = 0;
         for (let produit of this.panier) {
-            number += produit.quantity;
-
+            number += parseFloat(produit.quantity);
         }
-        return number;
+        return parseFloat(number);
     }
 
     getTotalPrice() {
@@ -65,18 +41,6 @@ class Panier {
         for (let produit of this.panier) {
             total += produit.quantity * produit.priceProduct;
         }
-        return total
+        return parseFloat(total)
     }
-
-    /*addDataForm(getDataForm) {
-        
-        if(getDataForm != undefined){
-            console.log(element)
-        }
-        else{
-            myCart.panier.push(getDataForm)
-
-        }
-    
-    }*/
 }
