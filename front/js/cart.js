@@ -1,4 +1,5 @@
-let myCart = new Panier()
+// Création d'un modèle de classe 
+let myCart = new Panier();
 
 // Création d'une fonction qui une fois la page chargée, declenche son contenu.
 window.addEventListener('DOMContentLoaded', async function () {
@@ -10,7 +11,7 @@ window.addEventListener('DOMContentLoaded', async function () {
 
   // Implémentation dans le DOM des éléments récupérés.
   else {
-    let html = ''
+    let html = '';
     for (const element of myCart.panier)
 
       html +=
@@ -36,125 +37,162 @@ window.addEventListener('DOMContentLoaded', async function () {
         </div>
       </article>`
 
-    document.getElementById('cart__items').innerHTML = html
+    document.getElementById('cart__items').innerHTML = html;
 
     // Récupération depuis le localstorage de la quantité sélectionnée par l'utilisateur pour permettre le calcul.
-    //let panierQuantite = getNumberProduct(this.panier);
+    document.getElementById("totalQuantity").innerHTML = myCart.getNumberProduct();
+    document.getElementById("totalPrice").innerHTML = myCart.getTotalPrice();
+  };
+});
 
-    document.getElementById("totalQuantity").innerHTML = myCart.getNumberProduct()
-    document.getElementById("totalPrice").innerHTML = myCart.getTotalPrice()
-  }
-})
-
-// Changement de la quantité ou suppression d'un produit si la quantité est à 0.
+// Changement de la quantité d'un canapé ou suppression de celui ci si sa quantité est à 0.
 let changerQuantite = document.getElementById("cart__items").addEventListener('click', function (event) {
-  console.log(event)
-  const row = event.target.closest('article.cart__item')
-  row.dataset.id
-  row.dataset.color
+  console.log(event);
+
+  const row = event.target.closest('article.cart__item');
+
   row.addEventListener('change', (event) => {
+
     if (event.target.matches('p.deleteItem')) {
-      let eventQuantity = parseFloat(event.target.value);
-      let foundId = myCart.panier.find(e => e.getId == row.dataset.id);
-      let foundColor = myCart.panier.find(e => e.color == row.dataset.color);
-      let product = foundId = foundColor
-      product.quantity = eventQuantity
+      parseFloat(event.target.value);
+      let product = myCart.panier.find(e => e.getId == row.dataset.id && e.color == row.dataset.color);
+      product.quantity = event.target.value;
+      document.getElementById("totalQuantity").innerHTML = myCart.getNumberProduct();
+      document.getElementById("totalPrice").innerHTML = myCart.getTotalPrice();
       myCart.save();
       if (product.quantity <= 0) {
-        let deleteCanap = myCart.panier.filter(e => e == product);
-        console.log(deleteCanap)
+        let findCanap = myCart.panier.findIndex(e => e.getId == row.dataset.id && e.color == row.dataset.color);
+        myCart.panier.splice(findCanap);
+        row.remove();
         myCart.save();
-        //location.reload()
-      }
+      };
 
     } else if (event.target.matches('input.itemQuantity')) {
-      let eventQuantity = parseFloat(event.target.value);
-      let foundId = myCart.panier.find(e => e.getId == row.dataset.id);
-      let foundColor = myCart.panier.find(e => e.color == row.dataset.color);
-      let product = foundId = foundColor
-      product.quantity = eventQuantity
+      parseFloat(event.target.value);
+      let product = myCart.panier.find(e => e.getId == row.dataset.id && e.color == row.dataset.color);
+      product.quantity = event.target.value;
+      document.getElementById("totalQuantity").innerHTML = myCart.getNumberProduct();
+      document.getElementById("totalPrice").innerHTML = myCart.getTotalPrice();
       myCart.save();
       if (product.quantity <= 0) {
-        let deleteCanap = myCart.panier.filter(e => e == product);
-        console.log(deleteCanap)
+        let findCanap = myCart.panier.findIndex(e => e.getId == row.dataset.id && e.color == row.dataset.color);
+        myCart.panier.splice(findCanap);
+        row.remove();
         myCart.save();
-        //location.reload()
-      }
-    }
-  })
-})
+      };
+    };
+  });
+});
 
-// Stockage des données saisies par l'utilisateur depuis le formulaire dans le localstorage
+// Vérification des données saisies par l'utilisateur puis sauvegarde si validé des données dans un objet.
 let getForm = document.querySelector(".cart__order__form").addEventListener('change', (event) => {
-  console.log(event)
+  console.log(event);
 
+  let contact = {};
+
+  let firstName = document.getElementById('firstName').value;
+  if (firstName) {
+    if (document.getElementById('firstName').checkValidity() == true) {
+      contact.firstName = firstName;
+      localStorage.setItem("Contact", JSON.stringify(contact));
+      document.getElementById("firstNameErrorMsg").innerHTML = "";
+      document.getElementById('firstName').style.border = "3px solid green";
+    }
+    else {
+      document.getElementById("firstNameErrorMsg").innerHTML = "Veuillez entrer votre nom, uniquement composé de lettres.";
+      document.getElementById('firstName').style.border = "3px solid red";
+    }
+  };
+
+  let lastName = document.getElementById('lastName').value
+  if (lastName) {
+    if (document.getElementById('lastName').checkValidity() == true) {
+      contact.lastName = lastName;
+      localStorage.setItem("Contact", JSON.stringify(contact));
+      document.getElementById("lastNameErrorMsg").innerHTML = "";
+      document.getElementById('lastName').style.border = "3px solid green";
+    }
+    else {
+      document.getElementById("lastNameErrorMsg").innerHTML = "Veuillez entrer votre nom, uniquement composé de lettres.";
+      document.getElementById('lastName').style.border = "3px solid red";
+    }
+  };
+
+  let address = document.getElementById('address').value;
+  if (address) {
+    if (document.getElementById('address').checkValidity() == true) {
+      contact.address = address;
+      localStorage.setItem("Contact", JSON.stringify(contact));
+      document.getElementById("addressErrorMsg").innerHTML = "";
+      document.getElementById('address').style.border = "3px solid green";
+    }
+    else {
+      document.getElementById("addressErrorMsg").innerHTML = "Veuillez entrer votre adresse.";
+      document.getElementById('address').style.border = "3px solid red";
+    }
+  };
+
+  let city = document.getElementById('city').value;
+  if (city) {
+    if (document.getElementById('city').checkValidity() == true) {
+      contact.city = city;
+      localStorage.setItem("Contact", JSON.stringify(contact));
+      document.getElementById("cityErrorMsg").innerHTML = "";
+      document.getElementById('city').style.border = "3px solid green";
+    }
+    else {
+      document.getElementById("cityErrorMsg").innerHTML = "Veuillez entrer votre ville, uniquement composée de lettres..";
+      document.getElementById('city').style.border = "3px solid red";
+    }
+  };
+
+  let email = document.getElementById('email').value;
+  if (email) {
+    if (document.getElementById('email').checkValidity() == true) {
+      contact.email = email;
+      localStorage.setItem("Contact", JSON.stringify(contact));
+      document.getElementById("emailErrorMsg").innerHTML = "";
+      document.getElementById('email').style.border = "3px solid green";
+    }
+    else {
+      document.getElementById("emailErrorMsg").innerHTML = "Veuillez entrer une adresse email valide.";
+      document.getElementById('email').style.border = "3px solid red";
+    }
+  };
+});
+
+// Fonction qui vérifie avant l'envoi au serveur, si le panier et le formulaire sont conforme.
+document.getElementById('order').addEventListener('click', function (event) {
+  event.preventDefault()
   let getJsonData = JSON.parse(localStorage.getItem("Data"));
   let getJsonContact = JSON.parse(localStorage.getItem("Contact"));
 
-  let firstName = document.getElementById('firstName').value
-  if (document.getElementById('firstName').checkValidity() == true) {
-    document.getElementById("firstNameErrorMsg").innerHTML = ""
-  }
-  else {
-    document.getElementById("firstNameErrorMsg").innerHTML = "Veuillez entrer votre nom, uniquement composé de lettres."
-  }
-
-  let lastName = document.getElementById('lastName').value
-  if (document.getElementById('lastName').checkValidity() == true) {
-    document.getElementById("lastNameErrorMsg").innerHTML = ""
-  }
-  else {
-    document.getElementById("lastNameErrorMsg").innerHTML = "Veuillez entrer votre nom, uniquement composé de lettres."
-  }
-
-  let address = document.getElementById('address').value
-  if (document.getElementById('address').checkValidity() == true) {
-    document.getElementById("addressErrorMsg").innerHTML = ""
-  }
-  else {
-    document.getElementById("addressErrorMsg").innerHTML = "Veuillez entrer votre adresse."
-  }
-
-  let city = document.getElementById('city').value
-  if (document.getElementById('city').checkValidity() == true) {
-    document.getElementById("cityErrorMsg").innerHTML = ""
-  }
-  else {
-    document.getElementById("cityErrorMsg").innerHTML = "Veuillez entrer votre ville, uniquement composée de lettres.."
-  }
-
-  let email = document.getElementById('email').value
-  if (document.getElementById('email').checkValidity() == true) {
-    document.getElementById("emailErrorMsg").innerHTML = ""
-  }
-  else {
-    document.getElementById("emailErrorMsg").innerHTML = "Veuillez entrer une adresse email valide."
-  }
-
-  let contact = { firstName, lastName, address, city, email }
-  localStorage.setItem("Contact", JSON.stringify(contact));
-
-  // Création de conditions pour que l'usager puisse valider le formulaire.
-  for(const ele in getJsonContact)
-  if (ele != undefined) {
-    document.getElementById('order').addEventListener('click', function (event) {
+  const size = Object.keys(getJsonContact).length;
+  console.log(size)
+  let compareLenght = 5
+  if (getJsonData != undefined) {
+    if (size == compareLenght) {
+      
       const contact = { getJsonData, getJsonContact };
       post();
-    })
+    }
+    else {
+      window.alert("Veuillez compléter le formulaire.");
+    }
   }
   else {
-    alert("Veuillez d'abord ajouter des éléments à votre panier")
-  }
+    window.alert("Veuillez d'abord ajouter des produits à votre panier");
+  };
 
   // Validation du formulaire en l'envoyant au serveur via la méthode POST.
   async function post() {
     const contact = JSON.parse(localStorage.getItem("Contact"));
     const products = JSON.parse(localStorage.getItem("Data"));
 
-    const productsID = products.map(p => p.getId)
-    console.log(productsID)
-    const command = { contact, products: productsID }
-    console.log(command)
+    const productsID = products.map(p => p.getId);
+    console.log(productsID);
+    const command = { contact, products: productsID };
+    console.log(command);
 
     const postFetch = await fetch("http://localhost:3000/api/products/order", {
       method: "POST",
@@ -163,24 +201,17 @@ let getForm = document.querySelector(".cart__order__form").addEventListener('cha
         'Content-Type': 'application/json'
       },
       body: JSON.stringify(command),
-    })
-    console.log(postFetch)
+    });
+    console.log(postFetch);
     const response = await postFetch.json();
     console.log(response);
 
     if (response) {
-      alert(`Votre commande numéro ${response.orderId} à bien été passée.`)
-      localStorage.setItem("orderId", response.orderId)
+      localStorage.setItem("orderId", response.orderId);
       window.location = `C:/Users/gpira/Desktop/Formation/P5_pirat_geoffrey/front/html/confirmation.html`
-    } else {
-      alert(`Erreur de commande`)
+    }
+    else {
+      alert(`Erreur de commande`);
     }
   };
-});
-
-
-
-
-
-
-
+})
