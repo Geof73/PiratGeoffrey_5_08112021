@@ -49,47 +49,45 @@ window.addEventListener('DOMContentLoaded', async function () {
 let changerQuantite = document.getElementById("cart__items").addEventListener('click', function (event) {
   console.log(event);
 
+  // Récupération grâce à l'évenement du clic de la souris et de la méthode closest du produit.
   const row = event.target.closest('article.cart__item');
 
-  row.addEventListener('change', (event) => {
-
+    // Si on appuie sur le boutton "supprimer", supprime le produit idenfitié par la variable "row" ainsi que dans le DOM.
     if (event.target.matches('p.deleteItem')) {
-      parseFloat(event.target.value);
-      let product = myCart.panier.find(e => e.getId == row.dataset.id && e.color == row.dataset.color);
-      product.quantity = event.target.value;
-      document.getElementById("totalQuantity").innerHTML = myCart.getNumberProduct();
-      document.getElementById("totalPrice").innerHTML = myCart.getTotalPrice();
-      myCart.save();
-      if (product.quantity <= 0) {
+
         let findCanap = myCart.panier.findIndex(e => e.getId == row.dataset.id && e.color == row.dataset.color);
         myCart.panier.splice(findCanap);
         row.remove();
         myCart.save();
-      };
-
+        document.getElementById("totalQuantity").innerHTML = myCart.getNumberProduct();
+        document.getElementById("totalPrice").innerHTML = myCart.getTotalPrice();
+  
+    // Si la quantité et/ou sa couleur sont modifié, récupérer les nouvelles valeurs.  
     } else if (event.target.matches('input.itemQuantity')) {
-      parseFloat(event.target.value);
       let product = myCart.panier.find(e => e.getId == row.dataset.id && e.color == row.dataset.color);
-      product.quantity = event.target.value;
-      document.getElementById("totalQuantity").innerHTML = myCart.getNumberProduct();
-      document.getElementById("totalPrice").innerHTML = myCart.getTotalPrice();
-      myCart.save();
-      if (product.quantity <= 0) {
+      product.quantity = parseFloat(event.target.value);
+      if (product.quantity == 0) {
         let findCanap = myCart.panier.findIndex(e => e.getId == row.dataset.id && e.color == row.dataset.color);
         myCart.panier.splice(findCanap);
         row.remove();
-        myCart.save();
-      };
-    };
-  });
-});
+      }
+      
+      // Puis sauvegarder les nouvelles valeurs dans le localstorage et actualiser la quantité et le total dans le DOM..
+      myCart.save();
+      document.getElementById("totalQuantity").innerHTML = myCart.getNumberProduct();
+      document.getElementById("totalPrice").innerHTML = myCart.getTotalPrice();
+    }
 
-// Vérification des données saisies par l'utilisateur puis sauvegarde si validé des données dans un objet.
+})
+
+// Vérification des données saisies par l'utilisateur puis sauvegarde dans un objet si elles sont valide.
 let getForm = document.querySelector(".cart__order__form").addEventListener('change', (event) => {
   console.log(event);
 
+  // Création d'un objet pour pouvoir ajouter les valeurs entrées par l'utilisateur.
   let contact = {};
 
+  // Récupération des informations rentrées par l'utilisateur depuis formulaire, si la réponse n'est pas conforme, message expliquant les erreurs.
   let firstName = document.getElementById('firstName').value;
   if (firstName) {
     if (document.getElementById('firstName').checkValidity() == true) {
@@ -161,15 +159,18 @@ let getForm = document.querySelector(".cart__order__form").addEventListener('cha
   };
 });
 
-// Fonction qui vérifie avant l'envoi au serveur, si le panier et le formulaire sont conforme.
-document.getElementById('order').addEventListener('click', function (event) {
+/// Récupération des données du localstorage du panier et du formulaire.
+document.getElementById('cart__order').addEventListener('submit', function (event) {
   event.preventDefault()
   let getJsonData = JSON.parse(localStorage.getItem("Data"));
   let getJsonContact = JSON.parse(localStorage.getItem("Contact"));
 
+  // Si le formulaire comporte bien 5 éléments.
   const size = Object.keys(getJsonContact).length;
   console.log(size)
   let compareLenght = 5
+
+  // Et si des produits ont été ajoutés au panier.
   if (getJsonData != undefined) {
     if (size == compareLenght) {
       
@@ -208,7 +209,7 @@ document.getElementById('order').addEventListener('click', function (event) {
 
     if (response) {
       localStorage.setItem("orderId", response.orderId);
-      window.location = `C:/Users/gpira/Desktop/Formation/P5_pirat_geoffrey/front/html/confirmation.html`
+      window.location = './confirmation.html'
     }
     else {
       alert(`Erreur de commande`);

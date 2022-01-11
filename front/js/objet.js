@@ -1,3 +1,4 @@
+// Page JS permettant la création d'un modèle de classes.
 class Panier {
     constructor() {
 
@@ -31,7 +32,7 @@ class Panier {
     getNumberProduct() {
         let number = 0;
         for (let produit of this.panier) {
-            number += parseFloat(produit.quantity);
+            number += produit.quantity;
         }
         return parseFloat(number);
     }

@@ -3,6 +3,7 @@
 // Création d'une variable permettant d'extraire l'url de la page, et d'ensuite récupérer son ID pour l'insérer dans une variable.
 const searchUrl = new URLSearchParams(window.location.search);
 const getId = searchUrl.get("id");
+console.log(getId)
 
 // Déclenchement d'une fonction au chargement du DOM
 window.addEventListener('DOMContentLoaded', async function () {
@@ -53,17 +54,36 @@ window.addEventListener('DOMContentLoaded', async function () {
         // Stockage des informations récupérées dans un objet.
         let cart = { getId, quantity, color, nameProduct, imageProduct, imageTxt, priceProduct }
 
+        // Création d'un nouveau modèle de classe
         let myCart = new Panier()
 
-        // Ajout de l'objet produit au tableau myCart.
-        if (quantity > 0) {
-            myCart.add(cart)
+        // Récupération du localstorage et de voir si le produit est déjà existant.
+        let getJsonData = JSON.parse(localStorage.getItem("Data"));
+        let findCanap = getJsonData.find(e => e.getId == getId && e.color == color)
 
-            // Sauvegarde dans le localstorage du panier.
-            myCart.save()
-            window.alert("Votre sélection a été ajoutée au panier !")
+        // Ajout de l'objet cart au tableau myCart si sa quantité est supérieur à 0 et si le produit n'existe pas dans le localstorage, puis sauvegarde dans le localstorage.
+        if (quantity > 0) {
+            if (findCanap == undefined) {
+                myCart.add(cart)
+                myCart.save()
+                window.alert("Votre sélection a été ajoutée au panier !")
+            }
+
+            // Si c'est le cas, récupération de la quantité du produit dans le localstorage et addition avec la quantité rentrée par l'utilisateur et sauvegarde dans le localstorage.
+            if (findCanap != undefined) {
+                let addQuantityWithLocalStorage = findCanap.quantity + quantity
+                cart.quantity = addQuantityWithLocalStorage
+                console.log(cart.quantity)
+                myCart.add(cart)
+                myCart.save(cart)
+                window.alert("La quantité a été ajoutée au panier !")
+            }
         }
-        else{window.alert("Veuillez ajouter une quantité à votre sélection !")}
+
+        // Si aucune quantité n'a été entrée par l'utilisateur.
+        else {
+            window.alert("Veuillez ajouter une quantité à votre sélection !")
+        }
     })
 })
 
