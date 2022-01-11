@@ -1,9 +1,6 @@
-
-
 // Création d'une variable permettant d'extraire l'url de la page, et d'ensuite récupérer son ID pour l'insérer dans une variable.
 const searchUrl = new URLSearchParams(window.location.search);
 const getId = searchUrl.get("id");
-console.log(getId)
 
 // Déclenchement d'une fonction au chargement du DOM
 window.addEventListener('DOMContentLoaded', async function () {
@@ -59,8 +56,7 @@ window.addEventListener('DOMContentLoaded', async function () {
 
         // Récupération du localstorage et de voir si le produit est déjà existant.
         let getJsonData = JSON.parse(localStorage.getItem("Data"));
-        let findCanap = getJsonData.find(e => e.getId == getId && e.color == color)
-
+        let findCanap = myCart.panier.find(e => e.getId == getId && e.color == color)
         // Ajout de l'objet cart au tableau myCart si sa quantité est supérieur à 0 et si le produit n'existe pas dans le localstorage, puis sauvegarde dans le localstorage.
         if (quantity > 0) {
             if (findCanap == undefined) {
@@ -70,12 +66,14 @@ window.addEventListener('DOMContentLoaded', async function () {
             }
 
             // Si c'est le cas, récupération de la quantité du produit dans le localstorage et addition avec la quantité rentrée par l'utilisateur et sauvegarde dans le localstorage.
-            if (findCanap != undefined) {
+
+            else {
+                console.log(findCanap.quantity)
                 let addQuantityWithLocalStorage = findCanap.quantity + quantity
                 cart.quantity = addQuantityWithLocalStorage
                 console.log(cart.quantity)
                 myCart.add(cart)
-                myCart.save(cart)
+                myCart.save()
                 window.alert("La quantité a été ajoutée au panier !")
             }
         }
