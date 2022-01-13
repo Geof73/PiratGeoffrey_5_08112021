@@ -61,19 +61,15 @@ window.addEventListener('DOMContentLoaded', async function () {
         if (quantity > 0) {
             if (findCanap == undefined) {
                 myCart.add(cart)
-                myCart.save()
                 window.alert("Votre sélection a été ajoutée au panier !")
             }
 
             // Si c'est le cas, récupération de la quantité du produit dans le localstorage et addition avec la quantité rentrée par l'utilisateur et sauvegarde dans le localstorage.
 
             else {
-                console.log(findCanap.quantity)
                 let addQuantityWithLocalStorage = findCanap.quantity + quantity
                 cart.quantity = addQuantityWithLocalStorage
-                console.log(cart.quantity)
                 myCart.add(cart)
-                myCart.save()
                 window.alert("La quantité a été ajoutée au panier !")
             }
         }
