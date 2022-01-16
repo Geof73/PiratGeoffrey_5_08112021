@@ -1,4 +1,5 @@
-// Page JS permettant la création d'un modèle de classes.
+// Page JS permettant de manipuler la classe Panier grâce à ses prototypes
+
 class Panier {
     constructor() {
         let panier = localStorage.getItem("Data");

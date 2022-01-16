@@ -1,7 +1,7 @@
 // Création d'un modèle de classe 
 let myCart = new Panier();
 
-// Création d'une fonction qui une fois la page chargée, declenche son contenu.
+// Création d'une fonction qui une fois la page chargée, déclenche son contenu.
 window.addEventListener('DOMContentLoaded', async function () {
 
   // Récupération des données du localstorage enregistrées depuis la page "product.js".
@@ -37,6 +37,7 @@ window.addEventListener('DOMContentLoaded', async function () {
         </div>
       </article>`
 
+    // Implémentation dans le DOM de la variable html pour obtenir un article dynamique.  
     document.getElementById('cart__items').innerHTML = html;
 
     // Récupération depuis le localstorage de la quantité sélectionnée par l'utilisateur pour permettre le calcul.
@@ -55,52 +56,42 @@ let changerQuantite = document.getElementById("cart__items").addEventListener('c
   if (event.target.matches('p.deleteItem')) {
     console.log(myCart.panier)
     let findCanap = myCart.panier.findIndex(e => e.getId == row.dataset.id && e.color == row.dataset.color);
-    console.log(findCanap)
-    let test = myCart.panier.splice(findCanap);
-    console.log(test)
-
+    let test = myCart.panier.splice(findCanap, 1);
     row.remove()
     myCart.save();
     document.getElementById("totalQuantity").innerHTML = myCart.getNumberProduct();
     document.getElementById("totalPrice").innerHTML = myCart.getTotalPrice();
   }
 
-  // Si la quantité et/ou sa couleur sont modifié, récupérer les nouvelles valeurs.  
+  // Si la quantité et/ou sa couleur sont modifiés, récupérer les nouvelles valeurs.  
   else if (event.target.matches('input.itemQuantity')) {
     let product = myCart.panier.find(e => e.getId == row.dataset.id && e.color == row.dataset.color);
     product.quantity = parseFloat(event.target.value);
-    /*if (product.quantity <= 0) {
+    if (product.quantity <= 0) {
       let findCanap = myCart.panier.findIndex(e => e.getId == row.dataset.id && e.color == row.dataset.color);
-      myCart.panier.splice(findCanap);
+      myCart.panier.splice(findCanap, 1);
       row.remove();
-    }*/
+    }
 
-    // Puis sauvegarder les nouvelles valeurs dans le localstorage et actualiser la quantité et le total dans le DOM..
+    // Puis sauvegarder les nouvelles valeurs dans le localstorage et actualiser la quantité et le total dans le DOM.
     myCart.save();
     document.getElementById("totalQuantity").innerHTML = myCart.getNumberProduct();
     document.getElementById("totalPrice").innerHTML = myCart.getTotalPrice();
   }
 })
 
-// Vérification des données saisies par l'utilisateur puis sauvegarde dans un objet si elles sont valide.
-let clicForm = document.querySelector("#cart__order").addEventListener('click', function (event) {
-
-  // Obtention de l'id de l'input du formulaire en fonction d'un évenement click.
-  const rowForm = event.composedPath()[0].id
-});
-
 // Création d'une fonction qui sera lancée si un élément contenu dans l'id "cart__order" est changé.
 let changeForm = document.querySelector("#cart__order").addEventListener('change', (event) => {
 
   // Obtention de l'id de l'input du formulaire en fonction d'un évenement change.
-  rowForm = event.composedPath()[0].id;
+  let rowForm = event.target.id;
 
   if (event.target.matches("input")) {
-    let getFormValue = document.querySelector("#" + rowForm).value;
+    let getFormValue = rowForm.value;
     let contact = {};
 
     // Si la vérification du champ rentré par l'utilisateur est valide, 
-    if (document.querySelector("#" + rowForm).checkValidity() == true) {
+    if (event.target.checkValidity() == true) {
 
       // Récupération du localstorage "Contact" pour vérifier si il y a déjà des informations stockées.
       let getJsonContact = JSON.parse(localStorage.getItem("Contact"));
@@ -119,23 +110,21 @@ let changeForm = document.querySelector("#cart__order").addEventListener('change
 
       // Indiquer à l'utilisateur par une bordure verte autour de l'input que les informations rentrées sont correcte. 
       document.querySelector("#" + rowForm + "ErrorMsg").textContent = "";
-      let inputColor = document.querySelector("#" + rowForm);
-      inputColor.classList.remove("red");
-      inputColor.classList.add("green");
+      event.target.classList.remove("red");
+      event.target.classList.add("green");
     }
 
     // Sinon, envoie un message d'erreur et entourer l'input d'une bordure rouge qu'elles ne remplissent pas les conditions du formulaire.
     else {
 
       // Sélectionne l'input en fonction du clic pour appliquer la couleur de la bordure.
-      let selectFormId = document.querySelector("#" + rowForm);
-      selectFormId.classList.remove("green");
-      selectFormId.classList.add("red");
+      event.target.classList.remove("green");
+      event.target.classList.add("red");
 
       // Création des messages d'erreur pour tous les inputs du formulaire.
       let firstName = "Veuillez entrer votre prénom, uniquement composé de lettres.";
       let lastName = "Veuillez entrer votre nom, uniquement composé de lettres.";
-      let city = "Veuillez entrer votre ville, uniquement composée de lettres..";
+      let city = "Veuillez entrer votre ville, uniquement composée de lettres.";
       let address = "Veuillez entrer votre adresse.";
       let email = "Veuillez entrer une adresse email valide.";
 
@@ -176,7 +165,7 @@ document.getElementById('cart__order').addEventListener('submit', function (even
 
       const contact = { getJsonData, getJsonContact };
 
-      // Déclencher la fonction "post" pour l'envoie des données au serveurs
+      // Déclenche la fonction "post" pour l'envoie des données au serveur.
       post();
     }
 

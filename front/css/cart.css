@@ -134,6 +134,13 @@ h2 {
 	box-shadow: rgb(42 18 206 / 90%) 0 0 22px 6px;
 }
 
+/*Classe formulaire*/
+.green {
+	border: 3px solid green !important;
+}
+.red {
+	border: 3px solid red !important;
+}
 
 
 /***************/

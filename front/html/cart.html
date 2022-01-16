@@ -78,22 +78,22 @@
               <form method="get" class="cart__order__form" id="cart__order">
                 <div class="cart__order__form__question">
                   <label for="firstName">Prénom: </label>
-                  <input type="text" name="firstName" id="firstName" pattern="[a-z]{2,}" required>
+                  <input type="text" name="firstName" id="firstName" pattern="[a-zA-Z- ]{2,}" required>
                   <p id="firstNameErrorMsg"><!-- ci est un message d'erreur --></p>
                 </div>
                 <div class="cart__order__form__question">
                   <label for="lastName">Nom: </label>
-                  <input type="text" name="lastName" id="lastName" pattern="[a-z]{2,}" required>
+                  <input type="text" name="lastName" id="lastName" pattern="[a-zA-Z- ]{2,}" required>
                   <p id="lastNameErrorMsg"></p>
                 </div>
                 <div class="cart__order__form__question">
                   <label for="address">Adresse: </label>
-                  <input type="text" name="address" id="address"  required>
+                  <input type="text" name="address" id="address" required>
                   <p id="addressErrorMsg"></p>
                 </div>
                 <div class="cart__order__form__question">
                   <label for="city">Ville: </label>
-                  <input type="text" name="city" id="city" pattern="[a-z]{2,}" required>
+                  <input type="text" name="city" id="city" pattern="[a-zA-Z- ]{2,}" required>
                   <p id="cityErrorMsg"></p>
                 </div>
                 <div class="cart__order__form__question">
@@ -134,7 +134,7 @@
         </div>
       </div>
     </footer>
-  <script src="../js/objet.js"></script>
+  <script src="../js/class.js"></script>
   <script src="../js/cart.js"></script>
   </body>
 </html>
