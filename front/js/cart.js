@@ -190,6 +190,7 @@ document.getElementById('cart__order').addEventListener('submit', function (even
     const productsId = products.map(p => p.getId);
     const command = { contact, products: productsId };
 
+    // Envoie au serveur avec la méthode post et d'obtenir un Id de commande si les informations fournis sont valides.
     const postFetch = await fetch("http://localhost:3000/api/products/order", {
       method: "POST",
       headers: {

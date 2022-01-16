@@ -1,5 +1,6 @@
-// Page JS permettant de manipuler la classe Panier grâce à ses prototypes
+// Page JS permettant de manipuler la classe Panier grâce à ses prototypes.
 
+// Construit la classe Panier.
 class Panier {
     constructor() {
         let panier = localStorage.getItem("Data");
@@ -11,10 +12,12 @@ class Panier {
         }
     }
 
+    // Sauvegarde des données dans le localstorage.
     save() {
         localStorage.setItem("Data", JSON.stringify(this.panier));
     }
 
+    // Permet de sauvegarde la quantité des articles.
     add(cart) {
         cart.quantity = parseFloat(cart.quantity)
         let foundProduct = this.panier.find(e => e.getId == cart.getId && e.color == cart.color);
@@ -28,6 +31,7 @@ class Panier {
         this.save();
     }
 
+    // Permet d'afficher la quantité totale des articles dans la page JS "cart"
     getNumberProduct() {
         let number = 0;
         for (let produit of this.panier) {
@@ -36,6 +40,7 @@ class Panier {
         return parseFloat(number);
     }
 
+    // Permet d'afficher le prix total des articles dans la page JS "cart"
     getTotalPrice() {
         let total = 0;
         for (let produit of this.panier) {
