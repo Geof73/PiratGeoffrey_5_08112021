@@ -83,11 +83,12 @@ let changerQuantite = document.getElementById("cart__items").addEventListener('c
 // Création d'une fonction qui sera lancée si un élément contenu dans l'id "cart__order" est changé.
 let changeForm = document.querySelector("#cart__order").addEventListener('change', (event) => {
 
-  // Obtention de l'id de l'input du formulaire en fonction d'un évenement change.
-  let rowForm = event.target.id;
+  // Obtention de l'id de l'input du formulaire en fonction d'un évenement click.
+  const rowForm = event.composedPath()[0].id
 
+  // Si la vérification du champ rentré par l'utilisateur est valide, 
   if (event.target.matches("input")) {
-    let getFormValue = rowForm.value;
+    let getFormValue = document.querySelector("#" + rowForm).value;
     let contact = {};
 
     // Si la vérification du champ rentré par l'utilisateur est valide, 
