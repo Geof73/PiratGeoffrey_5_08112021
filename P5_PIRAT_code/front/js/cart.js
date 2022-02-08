@@ -11,19 +11,24 @@ window.addEventListener('DOMContentLoaded', async function () {
 
   // Implémentation dans le DOM des éléments récupérés.
   else {
+
     let html = '';
-    for (const element of myCart.panier)
+    total = 0;
+    total2 = 0;
+    for (const element of myCart.panier) {
+      response = await fetch(`http://localhost:3000/api/products/${element.getId}`);
+      productResponseApi = await response.json();
 
       html +=
         `<article class="cart__item" data-id="${element.getId}" data-color="${element.color}">
         <div class="cart__item__img">
-          <img src="${element.imageProduct}" alt="${element.imageTxt}>
+          <img src="${productResponseApi.imageUrl}" alt="${productResponseApi.imageTxt}>
         </div>
         <div class="cart__item__content">
           <div class="cart__item__content__description">
-            <h2>${element.nameProduct}</h2>
+            <h2>${productResponseApi.name}</h2>
             <p>${element.color}</p>
-            <p>${element.priceProduct}€</p>
+            <p>${productResponseApi.price}€</p>
           </div>
           <div class="cart__item__content__settings">
             <div class="cart__item__content__settings__quantity">
@@ -37,13 +42,16 @@ window.addEventListener('DOMContentLoaded', async function () {
         </div>
       </article>`
 
+      total += element.quantity * productResponseApi.price
+    }
+
     // Implémentation dans le DOM de la variable html pour obtenir un article dynamique.  
     document.getElementById('cart__items').innerHTML = html;
 
     // Récupération depuis le localstorage de la quantité sélectionnée par l'utilisateur pour permettre le calcul.
     document.getElementById("totalQuantity").innerHTML = myCart.getNumberProduct();
-    document.getElementById("totalPrice").innerHTML = myCart.getTotalPrice();
-  };
+    document.getElementById("totalPrice").innerText = total
+  }
 });
 
 // Supprime l'article du DOM et du localstorage si le bouton "supprimer" est cliqué.
@@ -59,7 +67,7 @@ let suppressionCanap = document.getElementById("cart__items").addEventListener('
     row.remove()
     myCart.save();
     document.getElementById("totalQuantity").innerHTML = myCart.getNumberProduct();
-    document.getElementById("totalPrice").innerHTML = myCart.getTotalPrice();
+    document.getElementById("totalPrice").innerText = total
   }
 });
 
@@ -68,7 +76,7 @@ let changerQuantite = document.getElementById("cart__items").addEventListener('c
 
   // Récupération grâce à l'évenement du clic de la souris et de la méthode closest du produit.
   const row = event.target.closest('article.cart__item');
-
+  let test = row.dataset.id
   // Si la quantité et/ou sa couleur sont modifiés, récupérer les nouvelles valeurs.  
   if (event.target.matches('input.itemQuantity')) {
     let product = myCart.panier.find(e => e.getId == row.dataset.id && e.color == row.dataset.color);
@@ -81,10 +89,13 @@ let changerQuantite = document.getElementById("cart__items").addEventListener('c
 
     // Puis sauvegarder les nouvelles valeurs dans le localstorage et actualiser la quantité et le total dans le DOM.
     myCart.save();
+
     document.getElementById("totalQuantity").innerHTML = myCart.getNumberProduct();
-    document.getElementById("totalPrice").innerHTML = myCart.getTotalPrice();
+    document.getElementById("totalPrice").innerText = total
+
+
   }
-})
+});
 
 // Création d'une fonction qui sera lancée si un élément contenu dans l'id "cart__order" est changé.
 let changeForm = document.querySelector("#cart__order").addEventListener('change', (event) => {

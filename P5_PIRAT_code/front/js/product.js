@@ -41,15 +41,11 @@ window.addEventListener('DOMContentLoaded', async function () {
     button.addEventListener('click', function () {
 
         // Récupération des informations nécessaires pour la constitution de la page "panier".
-        let nameProduct = product.name
-        let imageProduct = product.imageUrl
-        let imageTxt = product.altTxt
-        let priceProduct = product.price
         const color = document.getElementById("colors").value
         const quantity = parseFloat(document.getElementById("quantity").value)
 
         // Stockage des informations récupérées dans un objet.
-        let cart = { getId, quantity, color, nameProduct, imageProduct, imageTxt, priceProduct }
+        let cart = { getId, quantity, color}
 
         // Création d'un nouveau modèle de classe
         let myCart = new Panier()
