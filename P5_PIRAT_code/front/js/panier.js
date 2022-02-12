@@ -41,10 +41,10 @@ class Panier {
     }
 
     // Permet d'afficher le prix total des articles dans la page JS "cart"
-    getTotalPrice(productResponseApi) {
+    getTotalPrice() {
         let total = 0;
         for (let produit of this.panier) {
-            total += produit.quantity * productResponseApi.price
+            total += produit.quantity
         }
         return parseFloat(total)
     }

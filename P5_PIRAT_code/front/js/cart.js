@@ -14,7 +14,6 @@ window.addEventListener('DOMContentLoaded', async function () {
 
     let html = '';
     total = 0;
-    total2 = 0;
     for (const element of myCart.panier) {
       response = await fetch(`http://localhost:3000/api/products/${element.getId}`);
       productResponseApi = await response.json();
@@ -28,7 +27,7 @@ window.addEventListener('DOMContentLoaded', async function () {
           <div class="cart__item__content__description">
             <h2>${productResponseApi.name}</h2>
             <p>${element.color}</p>
-            <p>${productResponseApi.price}€</p>
+            <p class="price">${productResponseApi.price}€</p>
           </div>
           <div class="cart__item__content__settings">
             <div class="cart__item__content__settings__quantity">
@@ -67,7 +66,7 @@ let suppressionCanap = document.getElementById("cart__items").addEventListener('
     row.remove()
     myCart.save();
     document.getElementById("totalQuantity").innerHTML = myCart.getNumberProduct();
-    document.getElementById("totalPrice").innerText = total
+    document.getElementById("totalPrice").innerText
   }
 });
 
@@ -76,7 +75,7 @@ let changerQuantite = document.getElementById("cart__items").addEventListener('c
 
   // Récupération grâce à l'évenement du clic de la souris et de la méthode closest du produit.
   const row = event.target.closest('article.cart__item');
-  let test = row.dataset.id
+
   // Si la quantité et/ou sa couleur sont modifiés, récupérer les nouvelles valeurs.  
   if (event.target.matches('input.itemQuantity')) {
     let product = myCart.panier.find(e => e.getId == row.dataset.id && e.color == row.dataset.color);
@@ -89,12 +88,31 @@ let changerQuantite = document.getElementById("cart__items").addEventListener('c
 
     // Puis sauvegarder les nouvelles valeurs dans le localstorage et actualiser la quantité et le total dans le DOM.
     myCart.save();
-
     document.getElementById("totalQuantity").innerHTML = myCart.getNumberProduct();
-    document.getElementById("totalPrice").innerText = total
-
-
+    document.getElementById("totalPrice").innerText
   }
+});
+
+// Fonction test
+let prixTotal = document.getElementById("cart__items").addEventListener('change', function (event) {
+
+  document.querySelectorAll('#cart__items').forEach(element => {
+
+    document.querySelectorAll('.price').forEach(element => {
+      let priceProduct = element.textContent
+      sliceEuro = priceProduct.slice(0, -1)
+    })
+
+    document.querySelectorAll('.itemQuantity').forEach(element => {
+      getDomQuantity = element.value
+    })
+
+    calculePrixTotal = 0
+    calculePrixTotal += sliceEuro * getDomQuantity
+    console.log(calculePrixTotal)
+  })
+
+  document.getElementById("totalPrice").innerText = calculePrixTotal
 });
 
 // Création d'une fonction qui sera lancée si un élément contenu dans l'id "cart__order" est changé.
