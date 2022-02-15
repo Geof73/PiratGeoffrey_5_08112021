@@ -1,19 +1,17 @@
-// Création d'un modèle de classe 
 let myCart = new Panier();
 
-// Création d'une fonction qui une fois la page chargée, déclenche son contenu.
+// Dès que la page est chargée, génération du panier avec les articles qui avaient été ajouté à celui-ci.
 window.addEventListener('DOMContentLoaded', async function () {
 
-  // Récupération des données du localstorage enregistrées depuis la page "product.js".
+  // Si aucun élément ajouté au panier, message indiquant que le panier est vide.
   if (myCart.getNumberProduct() === 0) {
-    document.getElementById("cart__items").innerHTML = "Votre panier est vide"
+    document.getElementById("cart__items").innerText = "Votre panier est vide"
   }
 
-  // Implémentation dans le DOM des éléments récupérés.
+  // Récupération des éléments nécessaires à la génération d'un panier dynamique.
   else {
 
     let html = '';
-    total = 0;
     for (const element of myCart.panier) {
       response = await fetch(`http://localhost:3000/api/products/${element.getId}`);
       productResponseApi = await response.json();
@@ -40,23 +38,44 @@ window.addEventListener('DOMContentLoaded', async function () {
           </div>
         </div>
       </article>`
-
-      total += element.quantity * productResponseApi.price
     }
 
-    // Implémentation dans le DOM de la variable html pour obtenir un article dynamique.  
+    // Insertion des éléments récupérés dans le html.
     document.getElementById('cart__items').innerHTML = html;
 
-    // Récupération depuis le localstorage de la quantité sélectionnée par l'utilisateur pour permettre le calcul.
-    document.getElementById("totalQuantity").innerHTML = myCart.getNumberProduct();
-    document.getElementById("totalPrice").innerText = total
+    // Appel à la fonction "prixTotal" pour calculer et afficher le total de la commande.
   }
+  prixTotal();
+  
 });
 
-// Supprime l'article du DOM et du localstorage si le bouton "supprimer" est cliqué.
-let suppressionCanap = document.getElementById("cart__items").addEventListener('click', function (event) {
+// Fonction permettant de calculer le prix total.
+async function prixTotal() {
 
-  // Récupération de l'article grâce à l'évenement du clique combiné à la méthode closest.
+  // Si le panier est vide, prévenir l'utilisateur avec un message et ensuite calculer le prix total.
+  if (myCart.getNumberProduct() === 0) {
+    document.getElementById("cart__items").innerText = "Votre panier est vide";
+    document.getElementById("totalQuantity").innerText = 0;
+    document.getElementById("totalPrice").innerText = '0'
+  }
+
+  // Si il ne l'est pas, simplement calculer le prix total.
+  else {
+    let total = 0;
+    for (const element of myCart.panier) {
+      response = await fetch(`http://localhost:3000/api/products/${element.getId}`);
+      productResponseApi = await response.json();
+      total += element.quantity * productResponseApi.price
+    }
+    document.getElementById("totalQuantity").innerText = myCart.getNumberProduct();
+    document.getElementById("totalPrice").innerText = total
+  }
+};
+
+// Supprime l'article du DOM et du localstorage si le bouton "supprimer" est cliqué.
+document.getElementById("cart__items").addEventListener('click', function (event) {
+
+  // Récupération de l'article grâce à l'évenement du clique combiné à la méthode closest pour identifier le produit à mettre à jour.
   const row = event.target.closest('article.cart__item');
 
   // Si on appuie sur le boutton "supprimer", supprime le produit idenfitié par la variable "row" ainsi que dans le DOM.
@@ -65,13 +84,12 @@ let suppressionCanap = document.getElementById("cart__items").addEventListener('
     myCart.panier.splice(findCanap, 1);
     row.remove()
     myCart.save();
-    document.getElementById("totalQuantity").innerHTML = myCart.getNumberProduct();
-    document.getElementById("totalPrice").innerText
+    prixTotal();
   }
 });
 
 // Changement de la quantité d'un canapé ou suppression de celui ci si sa quantité est à 0.
-let changerQuantite = document.getElementById("cart__items").addEventListener('change', function (event) {
+document.getElementById("cart__items").addEventListener('change', function (event) {
 
   // Récupération grâce à l'évenement du clic de la souris et de la méthode closest du produit.
   const row = event.target.closest('article.cart__item');
@@ -81,42 +99,18 @@ let changerQuantite = document.getElementById("cart__items").addEventListener('c
     let product = myCart.panier.find(e => e.getId == row.dataset.id && e.color == row.dataset.color);
     product.quantity = parseFloat(event.target.value);
     if (product.quantity <= 0) {
-      findCanap = myCart.panier.findIndex(e => e.getId == row.dataset.id && e.color == row.dataset.color);
+      let findCanap = myCart.panier.findIndex(e => e.getId == row.dataset.id && e.color == row.dataset.color);
       myCart.panier.splice(findCanap, 1);
       row.remove();
+      prixTotal();
     }
-
-    // Puis sauvegarder les nouvelles valeurs dans le localstorage et actualiser la quantité et le total dans le DOM.
     myCart.save();
-    document.getElementById("totalQuantity").innerHTML = myCart.getNumberProduct();
-    document.getElementById("totalPrice").innerText
+    prixTotal()
   }
 });
 
-// Fonction test
-let prixTotal = document.getElementById("cart__items").addEventListener('change', function (event) {
-
-  document.querySelectorAll('#cart__items').forEach(element => {
-
-    document.querySelectorAll('.price').forEach(element => {
-      let priceProduct = element.textContent
-      sliceEuro = priceProduct.slice(0, -1)
-    })
-
-    document.querySelectorAll('.itemQuantity').forEach(element => {
-      getDomQuantity = element.value
-    })
-
-    calculePrixTotal = 0
-    calculePrixTotal += sliceEuro * getDomQuantity
-    console.log(calculePrixTotal)
-  })
-
-  document.getElementById("totalPrice").innerText = calculePrixTotal
-});
-
 // Création d'une fonction qui sera lancée si un élément contenu dans l'id "cart__order" est changé.
-let changeForm = document.querySelector("#cart__order").addEventListener('change', (event) => {
+document.querySelector("#cart__order").addEventListener('change', (event) => {
 
   // Obtention de l'id de l'input du formulaire en fonction d'un évenement click.
   const rowForm = event.composedPath()[0].id
@@ -186,16 +180,18 @@ document.getElementById('cart__order').addEventListener('submit', function (even
   let getJsonContact = JSON.parse(localStorage.getItem("Contact"));
 
   // Récupération du nombre d'élément dans l'objet "Contact"
-  const size = Object.keys(getJsonContact).length;
+  const sizeContact = Object.keys(getJsonContact).length;
+  const sizeData = Object.keys(getJsonData).length;
 
   // Création d'une variable pour pouvoir la comparer au nombre d'élément se trouvant dans "Contact".
-  let compareLenght = 5;
+  let compareLenghtContact = 5;
+  let compareLenghtData = 0;
 
   // Et si des produits ont été ajoutés au panier.
-  if (getJsonData != undefined) {
+  if (sizeData != compareLenghtData) {
 
     // Si l'objet "Contact" comporte bien les 5 informations nécéssaire du formulaire. 
-    if (size == compareLenght) {
+    if (sizeContact == compareLenghtContact) {
 
       // Déclenche la fonction "post" pour l'envoie des données au serveur.
       post();
@@ -212,7 +208,7 @@ document.getElementById('cart__order').addEventListener('submit', function (even
     window.alert("Veuillez d'abord ajouter des produits à votre panier");
   };
 
-  // Validation du formulaire en l'envoyant au serveur via la méthode POST.
+  // Fonction qui permet d'obtenir un numéro de commande de la part du serveur.
   async function post() {
     const contact = JSON.parse(localStorage.getItem("Contact"));
     const products = JSON.parse(localStorage.getItem("Data"));
@@ -232,12 +228,12 @@ document.getElementById('cart__order').addEventListener('submit', function (even
     });
     const response = await postFetch.json();
 
-    // Si la réponse renvoyée par le serveur est valide.
+    // Si la réponse renvoyée par le serveur est valide, fournir le numéro de commande.
     if (response) {
       localStorage.setItem("orderId", response.orderId);
       window.location = './confirmation.html'
     }
-    // Sinon, message d'erreur.
+    // Sinon, message avertissant l'utilisateur d'une erreur lors de la génération.
     else {
       alert(`Erreur de commande`);
     }
